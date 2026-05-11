@@ -234,16 +234,6 @@
 <body>
 <div class="app-bg">
 
-  <!-- API 키 배너 -->
-  <div id="api-key-banner" style="background:linear-gradient(135deg,#FFD93D,#FFB085);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-    <span style="font-size:18px;">🔑</span>
-    <span style="font-size:13px;font-weight:700;color:white;flex:1;min-width:160px;">AI 동화를 쓰려면 API 키가 필요해요!</span>
-    <div style="display:flex;gap:6px;width:100%;">
-      <input type="password" id="api-key-input" placeholder="sk-ant-..." style="flex:1;padding:8px 12px;border-radius:12px;border:none;font-size:13px;outline:none;">
-      <button onclick="saveApiKey()" style="padding:8px 14px;background:white;border:none;border-radius:12px;font-weight:700;font-size:13px;cursor:pointer;color:#D4900A;white-space:nowrap;">저장</button>
-    </div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.85);">console.anthropic.com → API Keys에서 발급 (입력 후 이 창 사라져요)</div>
-  </div>
 
   <header>
     <div class="header-clouds"><div class="cloud cloud-1"></div><div class="cloud cloud-2"></div></div>
@@ -425,28 +415,6 @@
 
 <script>
 // ===== API KEY =====
-let ANTHROPIC_API_KEY = localStorage.getItem('anthropic_api_key') || '';
-
-function saveApiKey() {
-  const input = document.getElementById('api-key-input').value.trim();
-  if (!input.startsWith('sk-ant-')) { alert('API 키는 sk-ant- 로 시작해야 해요!'); return; }
-  ANTHROPIC_API_KEY = input;
-  localStorage.setItem('anthropic_api_key', input);
-  document.getElementById('api-key-banner').style.display = 'none';
-  alert('저장됐어요! 이제 동화를 즐겨요 📚');
-}
-
-function getHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'anthropic-version': '2023-06-01',
-    'anthropic-dangerous-direct-browser-access': 'true',
-    'x-api-key': ANTHROPIC_API_KEY
-  };
-}
-
-// 이미 키가 있으면 배너 숨김
-if (ANTHROPIC_API_KEY) document.getElementById('api-key-banner').style.display = 'none';
 
 // ===== NAV =====
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -502,7 +470,6 @@ function renderTasks() {
     const done = !!taskState[today + '_' + task.id];
     return `<div class="task-item ${done ? 'done' : ''}" onclick="toggleTask('${task.id}', this)">
       <span class="task-icon">${task.icon}</span>
-      <div class="task-name">${task.name}</div>
       <div class="task-stars">⭐ ${task.stars}개</div>
       <div class="task-check">${done ? '✅' : '○'}</div>
     </div>`;
@@ -638,117 +605,456 @@ function renderStoryList() {
   ).join('');
 }
 
-async function openStoryFromList(idx) {
+// ===== 미리 써둔 동화 데이터 =====
+const STORY_DATA = {
+  '신데렐라': `👠 신데렐라
+
+옛날 옛날에, 아주 예쁜 마음을 가진 소녀 신데렐라가 살았어요. 💛
+신데렐라는 아빠와 함께 행복하게 살았는데, 어느 날 아빠가 새엄마와 결혼을 했어요.
+새엄마에게는 딸이 두 명 있었는데, 셋 다 심술이 정말 고약했답니다. 😤
+
+새엄마와 언니들은 신데렐라에게 온갖 힘든 일을 다 시켰어요.
+설거지, 청소, 빨래... 신데렐라는 하루 종일 일만 했어요.
+그래도 신데렐라는 항상 노래를 부르며 웃음을 잃지 않았어요. 🎵
+
+어느 날, 왕국에서 큰 파티 소식이 들려왔어요! 🎉
+왕자님이 신부를 찾는 무도회가 열린다는 거예요.
+언니들은 신이 나서 예쁜 옷을 입고 떠났지만, 신데렐라는 집에 남아야 했어요.
+
+신데렐라가 혼자 슬프게 울고 있을 때, 반짝반짝 빛이 나더니 요정 할머니가 나타났어요! ✨
+"얘야, 왜 우니?" 요정 할머니가 따뜻하게 물었어요.
+"무도회에 가고 싶어요." 신데렐라가 조용히 대답했어요.
+
+요정 할머니는 마법 지팡이를 휙 흔들었어요! 🪄
+호박이 멋진 마차로 변하고, 생쥐들이 말이 되었어요.
+그리고 신데렐라의 낡은 옷이 세상에서 가장 아름다운 드레스로 변했답니다! 👗
+
+"단, 자정이 되면 마법이 풀린단다." 요정 할머니가 말했어요.
+"꼭 기억해야 해!"
+
+무도회장에 도착하자 모두가 신데렐라를 바라봤어요. 👀
+왕자님도 신데렐라를 보자마자 눈을 떼지 못했어요.
+"저와 춤을 춰 주시겠어요?" 왕자님이 손을 내밀었어요.
+
+둘은 밤새 춤을 추며 이야기를 나눴어요. 💃
+신데렐라는 정말 행복했어요.
+
+그런데 갑자기 시계가 땡땡땡 12번 울렸어요! ⏰
+"자정이다!" 신데렐라는 깜짝 놀라 뛰어나갔어요.
+계단을 내려오다 유리 구두 한 짝이 벗겨졌지만 멈출 수가 없었어요.
+
+다음 날, 왕자님은 유리 구두를 들고 온 나라를 돌아다녔어요.
+신데렐라에게 꼭 맞는 구두! 왕자님이 신데렐라를 찾아냈어요. 💑
+
+왕자님과 신데렐라는 결혼해서 오래오래 행복하게 살았답니다. 🏰
+착하고 따뜻한 마음은 언젠가 꼭 행복으로 돌아온다는 걸 기억해요! 💛`,
+
+  '백설공주': `🍎 백설공주
+
+옛날에 피부가 눈처럼 하얗고 입술이 빨간 공주가 살았어요.
+이름은 백설공주였답니다. ❄️
+백설공주는 마음도 아주 착하고 예뻤어요.
+
+백설공주의 새엄마 왕비는 마법 거울을 가지고 있었어요. 🪞
+"거울아 거울아, 세상에서 누가 제일 예쁘니?"
+"왕비님, 백설공주가 더 예쁩니다."
+왕비는 화가 나서 부들부들 떨었어요. 😡
+
+왕비는 사냥꾼에게 백설공주를 숲으로 데려가라고 했어요.
+하지만 착한 사냥꾼은 백설공주를 내보내 주었어요.
+"어서 도망치세요, 공주님!"
+
+백설공주는 무서운 숲속을 혼자 헤매었어요. 🌲
+덤불에 긁히고, 어두워서 무서웠지만 계속 걸었어요.
+그러다 작은 집 하나를 발견했어요! 🏠
+
+집 안에는 작은 침대 7개, 작은 의자 7개가 있었어요.
+일곱 난쟁이들의 집이었답니다! 🧙
+백설공주는 너무 피곤해서 침대에 누워 잠이 들었어요. 😴
+
+저녁에 돌아온 난쟁이들은 깜짝 놀랐어요.
+하지만 잠든 백설공주가 너무 예뻐서 깨우지 않았어요.
+다음 날 백설공주의 이야기를 듣고 함께 살기로 했어요. 🤗
+
+그런데 마법 거울로 이 사실을 안 왕비가 할머니로 변장했어요.
+"맛있는 사과 드세요!" 😈
+백설공주는 의심 없이 사과를 한 입 베어물었어요.
+그 순간 바닥에 쓰러지고 말았어요.
+
+난쟁이들은 슬피 울며 백설공주를 유리관에 넣어 산에 올려두었어요.
+
+그때 지나가던 왕자님이 백설공주를 보았어요. 🤴
+왕자님은 백설공주가 너무 아름다워 유리관에 살짝 입을 맞추었어요. 💋
+그 순간 백설공주가 눈을 떴어요!
+
+마법이 풀린 거예요! ✨
+백설공주와 왕자님은 결혼해서 행복하게 살았답니다. 💑
+언제나 낯선 사람의 음식은 조심해야 한다는 걸 기억해요! 🍎`,
+
+  '아기 돼지 삼형제': `🐷 아기 돼지 삼형제
+
+옛날에 아기 돼지 삼형제가 살았어요.
+엄마 돼지가 말했어요. "얘들아, 이제 너희도 스스로 집을 짓고 살아야 해!" 🏠
+삼형제는 신이 나서 각자 집을 짓기로 했어요.
+
+첫째 돼지 꼴꼴이는 게을렀어요.
+"짚으로 만들면 금방 되겠지!" 🌾
+후다닥 짚으로 집을 짓고는 놀러 나갔어요.
+
+둘째 돼지 꿀꿀이도 서둘렀어요.
+"나무로 만들면 되지 뭐!" 🪵
+나무로 집을 뚝딱 만들고 놀러 나갔어요.
+
+하지만 셋째 돼지 딱딱이는 달랐어요.
+"튼튼한 벽돌로 만들어야지!" 🧱
+땀을 뻘뻘 흘리며 열심히 벽돌집을 지었어요.
+오래 걸렸지만 정말 튼튼한 집이 완성됐어요! 💪
+
+그때 큰 나쁜 늑대가 나타났어요! 🐺
+"후~ 하고 불어서 집을 날려버리겠다!"
+첫째 꼴꼴이네 짚집으로 갔어요.
+"후~!" 짚집이 훌렁 날아가버렸어요! 😱
+
+꼴꼴이는 도망쳐서 둘째 꿀꿀이네 나무집으로 갔어요.
+"후~! 후~!" 늑대가 세게 불었어요.
+우지끈! 나무집도 무너졌어요!
+
+두 형제는 셋째 딱딱이네 벽돌집으로 달려갔어요. 🏃
+"후~! 후~! 후~!" 늑대가 힘껏 불었어요.
+하지만 벽돌집은 꼼짝도 하지 않았어요! 🧱
+
+늑대는 굴뚝으로 들어가려고 했어요.
+딱딱이가 재빨리 굴뚝 아래 뜨거운 냄비를 놓았어요. 🍲
+"앗 뜨거워!" 늑대는 도망가버렸어요. 💨
+
+그 뒤로 삼형제는 딱딱이의 튼튼한 집에서 함께 행복하게 살았어요.
+무슨 일이든 처음에 힘들어도 열심히 해야 한다는 걸 배웠답니다! ⭐`,
+
+  '빨간 모자': `🧣 빨간 모자
+
+옛날에 항상 빨간 모자를 쓰고 다니는 귀여운 소녀가 있었어요.
+그래서 모두가 빨간 모자라고 불렀답니다! 🧣
+
+어느 날 엄마가 말했어요.
+"할머니가 아프시대. 이 바구니 갖다 드릴래?" 🧺
+바구니 안에는 맛있는 케이크와 과일이 들어있었어요.
+
+"빨간 모자야, 숲속 길로만 가야 해. 다른 길로 가면 안 돼!" 엄마가 당부했어요.
+"네, 엄마!" 빨간 모자는 씩씩하게 출발했어요. 🌲
+
+숲속을 걷다가 빨간 모자는 늑대를 만났어요. 🐺
+"어디 가니, 꼬마야?"
+"할머니 댁에 가요. 저 너머 집이에요!"
+빨간 모자는 모르는 사람에게 말하면 안 되는데 대답해 버렸어요. 😬
+
+늑대는 빨간 모자보다 먼저 할머니 댁에 달려갔어요.
+"할머니, 저 왔어요!" 늑대가 할머니 목소리를 흉내냈어요.
+그러고는 할머니를 옷장 속에 가두고 할머니 옷을 입고 침대에 누웠어요.
+
+빨간 모자가 도착했어요.
+"할머니, 귀가 왜 이렇게 커요?"
+"더 잘 들으려고!"
+"눈은 왜 이렇게 커요?"
+"더 잘 보려고!"
+"입은 왜 이렇게 커요?" 👀
+"더 잘 잡아먹으려고!" 😱
+
+늑대가 벌떡 일어났어요!
+빨간 모자가 비명을 질렀어요.
+
+마침 지나가던 사냥꾼이 소리를 듣고 달려왔어요. 🪓
+사냥꾼이 늑대를 잡고 옷장에서 할머니를 구했어요! 🎉
+
+할머니와 빨간 모자는 함께 케이크를 먹었어요. 🎂
+그 뒤로 빨간 모자는 모르는 사람에게 말을 걸지 않았답니다.
+낯선 사람을 조심해야 한다는 걸 꼭 기억해요! 💛`,
+
+  '잠자는 숲속의 공주': `🌹 잠자는 숲속의 공주
+
+옛날에 왕과 왕비에게 드디어 공주가 태어났어요! 👶
+온 나라가 기뻐하며 파티를 열었어요.
+착한 요정들이 공주에게 선물을 주러 왔어요. ✨
+
+한 요정이 "아름다움을!", 다른 요정이 "착한 마음을!", 또 다른 요정이 "노래 실력을!" 주었어요.
+
+그런데 초대받지 못한 나쁜 요정이 갑자기 나타났어요! 😈
+"이 공주는 16살이 되면 물레 바늘에 찔려 죽을 거야!"
+왕과 왕비는 깜짝 놀라 울었어요.
+
+그때 아직 선물을 못 준 요정이 나섰어요.
+"제가 마법을 바꿀게요. 죽는 게 아니라 100년 동안 잠이 들 거예요!" 💤
+
+왕은 나라 안의 모든 물레를 없애버렸어요.
+
+공주는 무럭무럭 자랐고 아름답고 착한 아이가 됐어요. 🌸
+그런데 16살 생일날, 공주는 성 안 탑에서 오래된 물레를 발견했어요.
+"이게 뭐지?" 호기심에 손을 뻗었어요.
+
+콕! 바늘에 찔리자마자 공주는 깊은 잠에 빠졌어요. 😴
+왕과 왕비, 신하들, 강아지까지 모두 잠들었어요.
+성 주위로 가시덤불이 자라 아무도 들어올 수 없었어요. 🌿
+
+100년이 흘렀어요.
+용감한 왕자님이 가시덤불을 헤치고 성 안으로 들어왔어요. 🤴
+왕자님은 잠든 공주를 보고 입을 맞추었어요. 💋
+
+그 순간! 공주가 눈을 떴어요. ✨
+왕과 왕비, 신하들, 강아지까지 모두 잠에서 깨어났어요!
+왕자님과 공주는 결혼해서 오래오래 행복하게 살았답니다. 💑`,
+
+  '헨젤과 그레텔': `🍭 헨젤과 그레텔
+
+옛날에 헨젤과 그레텔 남매가 가난한 나무꾼 아빠와 살았어요.
+새엄마는 마음이 고약했어요. 😤
+"먹을 게 없어요. 애들을 숲에 버려요!"
+
+헨젤이 몰래 듣고 그레텔에게 말했어요.
+"걱정 마. 내가 방법을 생각해 놨어." 💡
+헨젤은 밤에 몰래 나가 하얀 돌멩이를 주머니 가득 주웠어요.
+
+다음 날 숲으로 가면서 헨젤은 조금씩 돌멩이를 떨어뜨렸어요.
+아빠와 새엄마가 아이들을 두고 가버렸어요.
+밤이 되자 달빛에 돌멩이가 반짝반짝 빛났어요. 🌙
+남매는 돌멩이를 따라 집으로 돌아왔어요! 🏠
+
+하지만 새엄마는 또 숲으로 보냈어요.
+이번엔 헨젤이 빵 부스러기를 떨어뜨렸는데... 새들이 다 먹어버렸어요! 🐦
+남매는 길을 잃었어요.
+
+숲속을 헤매다 신기한 집을 발견했어요!
+벽은 빵으로, 지붕은 케이크로, 창문은 사탕으로 만들어진 집이었어요. 🏡
+"와!" 배고팠던 남매는 집을 먹기 시작했어요.
+
+그때 문이 열리며 할머니가 나왔어요.
+"들어오렴, 맛있는 거 더 줄게." 🧙
+하지만 이 할머니는 사실 나쁜 마녀였어요! 😱
+
+마녀는 헨젤을 새장에 가두었어요.
+"살찌우면 잡아먹어야지!"
+그레텔은 날마다 요리를 해야 했어요.
+
+그레텔은 용감하게 계획을 세웠어요. 💪
+"오븐이 잘 달궈졌는지 확인해 봐요." 그레텔이 말했어요.
+마녀가 오븐 안을 들여다보는 순간 그레텔이 마녀를 밀어 넣었어요!
+
+헨젤을 풀어주고 마녀 집에서 보물을 가득 가져왔어요. 💎
+아빠와 다시 만나 행복하게 살았답니다!
+위험한 상황에서도 포기하지 않으면 이길 수 있어요! ⭐`,
+
+  '피노키오': `🪵 피노키오
+
+옛날에 제페토 할아버지가 살았어요.
+할아버지는 나무를 깎아 인형을 만들었어요.
+"얘야, 이름은 피노키오야!" 🪵
+
+그날 밤, 파란 요정이 나타났어요. ✨
+"착하게 살면 진짜 사람이 될 수 있어!"
+피노키오는 눈을 깜빡이더니 움직이기 시작했어요!
+
+피노키오는 학교에 가야 했어요. 📚
+하지만 가는 길에 여우와 고양이를 만났어요.
+"학교 말고 즐거운 곳에 가자!" 😈
+피노키오는 따라가고 말았어요.
+
+피노키오가 거짓말을 할 때마다 코가 길어졌어요! 👃
+"학교 갔어요." 코가 쭉!
+"숙제 했어요." 코가 더 쭉!
+
+피노키오는 나쁜 친구들에게 속아 당나귀 섬에 끌려갔어요.
+거기서 당나귀로 변할 뻔했어요! 🫏
+겨우 탈출했지만 할아버지가 자신을 찾다가 커다란 고래에게 삼켜졌다는 걸 알았어요. 🐋
+
+피노키오는 용감하게 바다로 뛰어들었어요.
+고래 뱃속에서 할아버지를 찾았어요!
+"할아버지!" 피노키오가 불을 피워 고래 재채기를 유도했어요.
+에취! 둘 다 고래 밖으로 나왔어요! 🎉
+
+파란 요정이 나타났어요.
+"피노키오야, 넌 착하고 용감해. 이제 진짜 사람이 될 자격이 있어!" ✨
+피노키오는 드디어 진짜 사람이 됐어요! 👦
+거짓말하지 않고 착하게 살아야 한다는 걸 배웠답니다! 💛`,
+
+  '인어공주': `🧜 인어공주
+
+깊은 바닷속 아름다운 왕국에 인어공주 아리엘이 살았어요.
+아리엘은 바다 위 세상이 너무 궁금했어요. 🌊
+몰래 모아둔 인간 세상 물건들을 바라보며 늘 꿈꿨죠.
+
+어느 날 폭풍우가 치던 밤, 배가 침몰했어요! ⚡
+아리엘은 빠져나온 왕자님을 구해서 해변에 데려다 주었어요.
+왕자님이 잠깐 눈을 뜨다 다시 감았어요.
+
+아리엘은 왕자님과 사랑에 빠졌어요. 💕
+"아빠, 저 인간이 되고 싶어요!"
+하지만 아버지 왕은 크게 화를 냈어요.
+
+나쁜 마녀 우르슬라가 나타났어요. 🐙
+"목소리를 주면 다리를 만들어줄게. 단, 3일 안에 왕자님의 진심 어린 키스를 받아야 해!"
+아리엘은 목소리를 내주고 다리를 얻었어요.
+
+하지만 말을 못하니 왕자님에게 마음을 전할 수가 없었어요. 😢
+마녀는 아리엘의 목소리를 이용해 왕자님을 속였어요.
+
+아버지 왕이 딸을 위해 자신을 희생하려 했어요.
+사랑의 힘으로 마녀를 물리쳤어요! ✨
+아버지는 아리엘의 진심을 알고 영원히 인간이 될 수 있게 해주었어요.
+
+아리엘과 왕자님은 결혼해서 행복하게 살았답니다. 💑
+꿈을 포기하지 않으면 언젠가 이루어진답니다! 🌈`,
+
+  '미운 오리 새끼': `🦆 미운 오리 새끼
+
+봄날, 오리 엄마가 알을 품고 있었어요. 🥚
+하나, 둘, 셋... 폭신한 아기 오리들이 태어났어요!
+그런데 마지막 알에서 나온 아이는 달랐어요.
+
+크고 회색빛에 모양도 달랐어요.
+"왜 저렇게 못생겼어?" 오리들이 놀렸어요. 😢
+형제들도, 농장 동물들도 모두 피했어요.
+
+작은 오리는 혼자 울면서 도망쳤어요.
+들판을 헤매고 차가운 강에서 겨울을 보냈어요. ❄️
+너무 춥고 배가 고팠어요.
+
+어느 날 예쁜 새들이 하늘을 나는 걸 봤어요. 🕊️
+하얗고 우아한 백조들이었어요.
+"나도 저렇게 예쁘다면..." 하며 물에 비친 자신을 봤어요.
+
+그런데 깜짝 놀랐어요! 😲
+물에 비친 건 못생긴 오리가 아니라 아름다운 백조였어요!
+나는 처음부터 백조였던 거예요! 🦢
+
+백조들이 다가와 말했어요.
+"우리 친구가 되자!"
+아이는 드디어 자신이 어디에 속하는지 알았어요. 💛
+
+어떻게 생겼든 자신을 사랑하면 언젠가 빛나게 된답니다! ✨`,
+
+  '토끼와 거북이': `🐢 토끼와 거북이
+
+숲속에 빠르기로 유명한 토끼가 살았어요. 🐰
+토끼는 항상 자랑을 했어요.
+"내가 제일 빨라! 아무도 날 못 이겨!"
+
+느린 거북이가 말했어요.
+"나랑 달리기 시합 해볼래?"
+토끼는 배꼽을 잡고 웃었어요. 😂
+"거북이랑? 하하! 좋아, 해보자!"
+
+숲속 동물들이 모두 모였어요.
+"준비, 시작!" 🏁
+
+토끼는 쏜살같이 달렸어요. 🏃
+금세 거북이를 한참 앞섰어요.
+"거북이가 언제 여기까지 오겠어. 낮잠이나 자야지." 🌳
+토끼는 나무 그늘에서 낮잠을 잤어요. 😴
+
+거북이는 쉬지 않고 걸었어요.
+한 걸음, 한 걸음, 천천히 하지만 꾸준히. 🐢
+더울 때도, 힘들 때도 멈추지 않았어요.
+
+토끼가 잠에서 깨어났어요.
+"이제 가볼까?" 뛰어가다 깜짝 놀랐어요!
+거북이가 이미 결승선을 넘고 있었어요! 🎉
+
+"거북이가 이겼습니다!" 🏆
+토끼는 부끄러워서 고개를 들 수가 없었어요.
+
+아무리 느려도 꾸준히 하면 이길 수 있어요!
+자만하지 말고 끝까지 최선을 다해요! 💪`,
+
+  '개미와 베짱이': `🐜 개미와 베짱이
+
+여름날, 베짱이가 나무 위에서 노래를 불렀어요. 🎵
+"즐거운 여름이야~ 노래하고 놀자!"
+
+개미들은 땀을 뻘뻘 흘리며 일했어요.
+먹을 것을 모아 겨울을 준비했어요.
+"베짱이야, 너도 준비해야지!" 개미가 말했어요. 🐜
+
+"겨울은 아직 멀었어. 나중에 할게!" 🦗
+베짱이는 계속 노래하고 춤을 췄어요.
+
+가을이 되었어요. 🍂
+나뭇잎이 우수수 떨어졌어요.
+개미들은 더 열심히 창고를 채웠어요.
+베짱이는 그래도 놀았어요.
+
+드디어 겨울이 왔어요. ❄️
+눈이 펑펑 쏟아지고 너무 추웠어요.
+베짱이는 먹을 것이 하나도 없었어요.
+배가 너무 고팠어요. 😢
+
+베짱이는 개미 집 문을 두드렸어요.
+"제발 먹을 것 좀 나눠줘..."
+
+개미가 문을 열었어요.
+"들어와. 하지만 다음엔 미리 준비해야 해!" 🏠
+따뜻한 집에서 맛있는 음식을 먹었어요.
+
+베짱이는 봄이 오자 일도 하고 노래도 불렀어요. 🌸
+즐겁게 놀 때도 있지만, 해야 할 일도 미루지 않았답니다!
+준비하는 사람이 행복하게 살 수 있어요! ⭐`,
+};
+
+// 나머지 동화는 공통 텍스트로
+function getStoryText(title) {
+  if (STORY_DATA[title]) return STORY_DATA[title];
+  return `${REAL_STORIES.find(s=>s.title===title)?.emoji || '📖'} ${title}\n\n옛날 옛날에 ${title}의 이야기가 시작됩니다... ✨\n\n(이 동화는 곧 추가될 예정이에요! 다른 동화를 읽어봐요 🌟)`;
+}
+
+function openStoryFromList(idx) {
   const story = REAL_STORIES[idx];
   const card = document.getElementById('story-read-card');
   const box = document.getElementById('story-read-box');
   const titleEl = document.getElementById('story-read-title');
   titleEl.textContent = story.emoji + ' ' + story.title;
   card.style.display = 'block';
-  box.innerHTML = `<div style="text-align:center;padding:20px;"><div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div style="font-family:Gaegu,cursive;font-size:18px;color:var(--text-light);">이야기 불러오는 중...</div></div>`;
+  box.innerHTML = `<div class="story-text">${getStoryText(story.title).replace(/\n/g, '<br>')}</div>`;
   card.scrollIntoView({ behavior: 'smooth' });
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: `6살 아이를 위해 "${story.title}" 동화를 써줘.
-조건:
-- 첫 줄에 제목만 써줘 (이모지 포함)
-- 반드시 30줄 이상 충분히 길게 써줘
-- 실제 동화 내용과 등장인물을 충실히 살려서 생생하게 묘사해
-- 문단을 4~5개로 나눠서 읽기 쉽게 구성해
-- 아이가 좋아할 귀여운 묘사와 대화를 풍부하게 포함
-- 이모지 6개 이상 적절히 활용
-- 교훈이 담긴 따뜻한 결말
-- 쉬운 단어, 짧은 문장 사용
-한국어로.` }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '이야기를 불러오지 못했어요 🥺';
-    box.innerHTML = `<div class="story-text">${text}</div>`;
-  } catch(e) {
-    box.innerHTML = `<div class="story-text">앗, 연결이 안 됐어요! 다시 눌러봐요 🥺</div>`;
-  }
 }
 
 function closeStoryRead() {
   document.getElementById('story-read-card').style.display = 'none';
 }
 
-// AI 랜덤 생성
-async function generateStory() {
+// AI 랜덤 - 목록에서 랜덤 선택
+function generateStory() {
   const story = REAL_STORIES[Math.floor(Math.random() * REAL_STORIES.length)];
   document.getElementById('reveal-btn').style.display = 'none';
   document.getElementById('riddle-answer').style.display = 'none';
-  showLoading();
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: `6살 아이를 위해 "${story.title}" 동화를 재미있게 써줘.
-조건:
-- 첫 줄에 제목 (이모지 포함)
-- 30줄 이상 길게
-- 실제 동화 내용 충실하게
-- 귀여운 묘사와 대화 풍부하게
-- 이모지 6개 이상
-- 따뜻한 결말과 교훈
-- 쉬운 단어 사용
-한국어로.` }]
-      })
-    });
-    const data = await res.json();
-    showStoryText(data.content?.[0]?.text || '다시 눌러봐요! 🥺');
-  } catch(e) { showStoryText('앗, 연결이 안 됐어요! 다시 눌러봐요 🥺'); }
+  showStoryText(getStoryText(story.title).replace(/\n/g, '<br>'));
 }
 
-async function generateRiddle() {
+// 수수께끼 목록
+const RIDDLES = [
+  { q: '나는 노랗고 길쭉해요. 원숭이가 좋아해요. 나는 뭘까요? 🍌', a: '바나나' },
+  { q: '나는 빨갛고 동그래요. 달콤해요. 과일이에요. 나는 뭘까요? 🍎', a: '사과' },
+  { q: '나는 멍멍 짖어요. 꼬리를 흔들어요. 나는 뭘까요? 🐶', a: '강아지' },
+  { q: '나는 야옹 울어요. 수염이 있어요. 쥐를 잡아요. 나는 뭘까요? 🐱', a: '고양이' },
+  { q: '나는 하늘을 날아요. 깃털이 있어요. 짹짹 울어요. 나는 뭘까요? 🐦', a: '새' },
+  { q: '나는 하얗고 차가워요. 여름에 녹아요. 달콤해요. 나는 뭘까요? 🍦', a: '아이스크림' },
+  { q: '나는 동그랗고 뜨거워요. 낮에 하늘에 있어요. 노란색이에요. 나는 뭘까요? ☀️', a: '태양' },
+  { q: '나는 비가 오면 나와요. 일곱 가지 색이에요. 하늘에 떠요. 나는 뭘까요? 🌈', a: '무지개' },
+  { q: '나는 둥글고 하얘요. 밤에 빛나요. 토끼가 산다고 해요. 나는 뭘까요? 🌙', a: '달' },
+  { q: '나는 초록색이에요. 껍질을 벗기면 빨개요. 씨가 많아요. 나는 뭘까요? 🍉', a: '수박' },
+  { q: '나는 네 발이 있어요. 음매 울어요. 우유를 줘요. 나는 뭘까요? 🐄', a: '소' },
+  { q: '나는 바닷속에 살아요. 헤엄쳐요. 지느러미가 있어요. 나는 뭘까요? 🐟', a: '물고기' },
+  { q: '나는 깡충깡충 뛰어요. 귀가 길어요. 당근을 좋아해요. 나는 뭘까요? 🐰', a: '토끼' },
+  { q: '나는 코가 길어요. 귀가 커요. 땅콩을 좋아해요. 나는 뭘까요? 🐘', a: '코끼리' },
+  { q: '나는 흰색과 검은색이에요. 대나무를 먹어요. 중국에 살아요. 나는 뭘까요? 🐼', a: '판다' },
+  { q: '나는 하늘을 날아요. 매우 빠르게 달려요. 목이 길어요. 나는 뭘까요? 🦒', a: '기린' },
+  { q: '나는 딱딱한 집이 있어요. 느리게 걸어요. 물에서도 살아요. 나는 뭘까요? 🐢', a: '거북이' },
+  { q: '나는 빨갛고 하트 모양이에요. 달콤해요. 작은 씨가 많아요. 나는 뭘까요? 🍓', a: '딸기' },
+];
+
+function generateRiddle() {
   document.getElementById('reveal-btn').style.display = 'none';
   document.getElementById('riddle-answer').style.display = 'none';
-  showLoading();
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 300,
-        messages: [{ role: 'user', content: `6살 아이가 쉽게 맞힐 수 있는 아주 쉬운 수수께끼 1개 만들어줘.
-형식:
-수수께끼: (질문)
-정답: (답)
-
-조건:
-- 정말 쉽게! 6살 아이가 바로 맞힐 수 있는 수준
-- 동물, 과일, 음식, 색깔, 신체 같은 친숙한 것
-- 힌트가 명확해서 바로 알 수 있게
-- 예시처럼: "나는 노랗고, 길쭉해요. 원숭이가 좋아해요. 나는 뭘까요?" → 바나나
-- 반드시 위 형식 그대로만 출력
-한국어로.` }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
-    const lines = text.split('\n').filter(l => l.trim());
-    const qLine = lines.find(l => l.includes('수수께끼:')) || lines[0];
-    const aLine = lines.find(l => l.includes('정답:')) || lines[lines.length-1];
-    currentRiddleAnswer = aLine.replace('정답:', '').trim();
-    showStoryText('🤔 ' + qLine.replace('수수께끼:', '').trim());
-    document.getElementById('reveal-btn').style.display = 'block';
-  } catch(e) {
-    const r = getFallbackRiddle();
-    showStoryText('🤔 ' + r.q);
-    currentRiddleAnswer = r.a;
-    document.getElementById('reveal-btn').style.display = 'block';
-  }
+  const r = RIDDLES[Math.floor(Math.random() * RIDDLES.length)];
+  currentRiddleAnswer = r.a;
+  showStoryText('🤔 ' + r.q);
+  document.getElementById('reveal-btn').style.display = 'block';
 }
 
 function revealAnswer() {
@@ -763,25 +1069,8 @@ function showLoading() {
 function showStoryText(text) {
   document.getElementById('story-box').innerHTML = `<div class="story-text">${text}</div>`;
 }
-function getFallbackRiddle() {
-  const r = [
-    { q: '나는 빨갛고 동그래요. 달콤해요. 과일이에요. 나는 뭘까요? 🍎', a: '사과' },
-    { q: '나는 노랗고 길쭉해요. 원숭이가 좋아해요. 나는 뭘까요? 🍌', a: '바나나' },
-    { q: '나는 하늘을 날아요. 몸에 깃털이 있어요. 짹짹 울어요. 나는 뭘까요? 🐦', a: '새' },
-    { q: '나는 멍멍 짖어요. 꼬리를 흔들어요. 사람들이 키워요. 나는 뭘까요? 🐶', a: '강아지' },
-    { q: '나는 동그랗고 뜨거워요. 낮에 하늘에 있어요. 노란색이에요. 나는 뭘까요? ☀️', a: '태양' },
-  ];
-  return r[Math.floor(Math.random() * r.length)];
-}
 
 renderStoryList();
-function getFallbackRiddle() {
-  const r = [
-    { q: '나는 하얗고 차가워요. 여름에 녹아요. 맛있어요. 나는 뭘까요? 🍦', a: '아이스크림' },
-    { q: '밤에 빛나고, 낮에는 안 보여요. 하늘에 많이 있어요. 나는 뭘까요? ⭐', a: '별' },
-  ];
-  return r[Math.floor(Math.random() * r.length)];
-}
 
 // ===== MATH =====
 let correctCount = 0, wrongCount = 0, currentAnswer = 0, mathLevel = 2, questionActive = false;
